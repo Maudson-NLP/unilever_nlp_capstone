@@ -30,14 +30,14 @@ def translation_to_eng(df):
     for i in range(len(df)):
         text = df[i]
         # text_cl = str(emoji_pattern.sub(r'', text))
-        if text_cl is not None:
-            try:
-                trans = translator.translate(text, 'en')
-                text_trans.append(trans.text)
-            except:
-                print("*****")
-                print(i)
-                print(text_cl)
+        #if text_cl is not None:
+        try:
+            trans = translator.translate(text, 'en')
+            text_trans.append(trans.text)
+        except:
+            print("*****")
+            print(i)
+            print(text)
         else:
             text_trans.append(None)
     return text_trans
