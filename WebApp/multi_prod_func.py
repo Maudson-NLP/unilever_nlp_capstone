@@ -32,7 +32,7 @@ def translation_to_eng(df):
         # text_cl = str(emoji_pattern.sub(r'', text))
         if text_cl is not None:
             try:
-                trans = translator.translate(text_cl, 'en')
+                trans = translator.translate(text, 'en')
                 text_trans.append(trans.text)
             except:
                 print("*****")
