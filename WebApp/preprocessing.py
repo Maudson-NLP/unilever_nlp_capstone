@@ -24,7 +24,7 @@ path_to_jar = os.path.join(*path_to_jar)
 path_to_models_jar = [cwd, 'StanfordCoreNLP', 'stanford-corenlp-3.2.0-models.jar']
 path_to_models_jar = os.path.join(*path_to_models_jar)
 
-stan_parser = StanfordParser(path_to_jar=path_to_jar, path_to_models_jar=path_to_models_jar)
+# stan_parser = StanfordParser(path_to_jar=path_to_jar, path_to_models_jar=path_to_models_jar)
 #ENCHANT_DICT = enchant.Dict("en_US")
 
 
