@@ -16,7 +16,7 @@ def getReviews(page, product_name):
 	html = content.text
 	soup = BeautifulSoup(html, "lxml")
 	total = 0
-	print(html)
+	# print(html)
 	try:
 		for level1 in soup.find_all("div", {'class': 'a-section a-spacing-none reviews-content a-size-base'}):
 			for level2 in level1("div", {'id': 'cm_cr-review_list'}):
