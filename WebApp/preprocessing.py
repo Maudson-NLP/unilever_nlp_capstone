@@ -19,11 +19,14 @@ DELIMITER = '\n' + '*' * 30 + ' '
 eos_regex = r',?\s*([^.])$'
 
 cwd = os.getcwd() + '/'
-path_to_jar = cwd + 'StanfordCoreNLP/stanford-corenlp-3.2.0.jar'
-path_to_models_jar = cwd + 'StanfordCoreNLP/stanford-corenlp-3.2.0-models.jar'
+path_to_jar = [cwd + 'StanfordCoreNLP', 'stanford-corenlp-3.2.0.jar']
+path_to_jar = os.path.join(*path_to_jar)
+path_to_models_jar = [cwd, 'StanfordCoreNLP', 'stanford-corenlp-3.2.0-models.jar']
+path_to_models_jar = os.join(*path_to_models_jar)
 
 stan_parser = StanfordParser(path_to_jar=path_to_jar, path_to_models_jar=path_to_models_jar)
 #ENCHANT_DICT = enchant.Dict("en_US")
+
 
 def make_sentences_from_dataframe(df, columns):
 	"""
