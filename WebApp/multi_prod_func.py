@@ -29,7 +29,7 @@ def translation_to_eng(df):
     text_trans = []
     for i in range(len(df)):
         text = df[i]
-        text_cl = str(emoji_pattern.sub(r'', text))
+        # text_cl = str(emoji_pattern.sub(r'', text))
         if text_cl is not None:
             try:
                 trans = translator.translate(text_cl, 'en')
