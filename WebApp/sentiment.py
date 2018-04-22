@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import time
-import apis.aylienapi.aylienapiclient.textapi
+from aylienapiclient import textapi
 
 
 def calculate_score(polarity, polarity_conf):
@@ -26,8 +26,8 @@ def calculate_score(polarity, polarity_conf):
 
 
 # AYLIEN
-# aylien = apis.aylienapi.aylienapiclient.textapi.Client("4df6473c", "f827888e31b6b52f85a6061eb3f18ad1")
-# aylien = apis.aylienapi.aylienapiclient.textapi.Client("8f14979e", "4b1ff15f606a003e025a93070a822d54")
+aylien = textapi.Client("4df6473c", "f827888e31b6b52f85a6061eb3f18ad1")
+#aylien = apis.aylienapi.aylienapiclient.textapi.Client("8f14979e", "4b1ff15f606a003e025a93070a822d54")
 
 # # Textalytics
 # api = 'http://api.meaningcloud.com/sentiment-2.0'
@@ -35,8 +35,6 @@ def calculate_score(polarity, polarity_conf):
 # model = 'general_es' # general_es / general_es / general_fr
 
 def get_sentiment(t, s):
-    aylien = apis.aylienapi.aylienapiclient.textapi.Client("8f14979e", "4b1ff15f606a003e025a93070a822d54")
-
     text_sentiment = aylien.Sentiment({'text': t})
 #     print(text_sentiment)
     text_polarity = text_sentiment['polarity']
@@ -70,15 +68,13 @@ def getHybridScore(t, s, text_score, sum_score):
 
 
 def get_sentiment_bulk(reviews):
-    aylien = apis.aylienapi.aylienapiclient.textapi.Client("4969e38e", "f8de4ced275a6b449a677d3efeae6e5b")
 
     for i in range(len(reviews)):
         t = reviews[i]['text']
         s = reviews[i]['title']
 
-
         text_sentiment = aylien.Sentiment({'text': t})
-    #     print(text_sentiment)
+        print(text_sentiment)
         text_polarity = text_sentiment['polarity']
         text_polarity_conf = text_sentiment['polarity_confidence']
 
