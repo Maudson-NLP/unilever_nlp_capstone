@@ -5,3 +5,4 @@ WebApp/nohup.out
 .idea
 **/*.pyc
 /WebApp/test_data
+.vs
