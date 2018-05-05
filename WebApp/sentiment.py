@@ -70,7 +70,7 @@ def get_sentiment_bulk(reviews):
     # aylien = textapi.Client("4969e38e", "f8de4ced275a6b449a677d3efeae6e5b")
     aylien = textapi.Client("ea9b1309", "59ad1ddbae972c6526c920dfb0c5116b")
 
-    print reviews
+    print(reviews)
 
     for i in range(len(reviews)):
         t = reviews[i]['text']
