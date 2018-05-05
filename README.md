@@ -1,5 +1,7 @@
 # unilever_nlp_capstone
 
+
+### Helpful links
 https://pypi.org/project/nltk/
 
 https://www.python.org/downloads/release/python-2710/
@@ -8,6 +10,8 @@ https://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.groupby.
 
 http://localhost:5000/
 
+
+### History of commands
 
 C:\Users\UnileverNLP\Desktop\unilever_nlp_capstone-master\unilever_nlp_capstone-master\WebApp>doskey /history
 
