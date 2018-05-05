@@ -28,7 +28,9 @@ def unique_everseen(iterable, key=None):
     seen = set()
     seen_add = seen.add
     if key is None:
-        for element in itertools.filterfalse(seen.__contains__, iterable):
+        # Todo: ifilterfalse replaced with filterfalse in later Python
+        # for element in itertools.filterfalse(seen.__contains__, iterable):
+        for element in itertools.ifilterfalse(seen.__contains__, iterable):
             seen_add(element)
             yield element
     else:

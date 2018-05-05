@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import time
-import apis.aylienapi.aylienapiclient.textapi
+from aylienapiclient import textapi
 
 
 def calculate_score(polarity, polarity_conf):
@@ -24,7 +24,6 @@ def calculate_score(polarity, polarity_conf):
 
 # num_reviews = len(rating)
 
-
 # AYLIEN
 # aylien = apis.aylienapi.aylienapiclient.textapi.Client("4df6473c", "f827888e31b6b52f85a6061eb3f18ad1")
 # aylien = apis.aylienapi.aylienapiclient.textapi.Client("8f14979e", "4b1ff15f606a003e025a93070a822d54")
@@ -35,21 +34,20 @@ def calculate_score(polarity, polarity_conf):
 # model = 'general_es' # general_es / general_es / general_fr
 
 def get_sentiment(t, s):
-    aylien = apis.aylienapi.aylienapiclient.textapi.Client("8f14979e", "4b1ff15f606a003e025a93070a822d54")
+    # aylien = textapi.Client("8f14979e", "4b1ff15f606a003e025a93070a822d54")
+    aylien = textapi.Client("ea9b1309", "59ad1ddbae972c6526c920dfb0c5116b")
 
     text_sentiment = aylien.Sentiment({'text': t})
-#     print(text_sentiment)
+    print(text_sentiment)
+
     text_polarity = text_sentiment['polarity']
     text_polarity_conf = text_sentiment['polarity_confidence']
-
     text_score = calculate_score(text_polarity, text_polarity_conf)
-
     sum_sentiment = aylien.Sentiment({'text': s})
     sum_polarity = sum_sentiment['polarity']
     sum_polarity_conf = sum_sentiment['polarity_confidence']
 
     sum_score = calculate_score(sum_polarity, sum_polarity_conf)
-    
     return text_score, sum_score
 
 
@@ -68,17 +66,19 @@ def getHybridScore(t, s, text_score, sum_score):
         return (text_score + sum_score) / 2
 
 
-
 def get_sentiment_bulk(reviews):
-    aylien = apis.aylienapi.aylienapiclient.textapi.Client("4969e38e", "f8de4ced275a6b449a677d3efeae6e5b")
+    # aylien = textapi.Client("4969e38e", "f8de4ced275a6b449a677d3efeae6e5b")
+    aylien = textapi.Client("ea9b1309", "59ad1ddbae972c6526c920dfb0c5116b")
+
+    print reviews
 
     for i in range(len(reviews)):
         t = reviews[i]['text']
         s = reviews[i]['title']
 
-
         text_sentiment = aylien.Sentiment({'text': t})
-    #     print(text_sentiment)
+        print(text_sentiment)
+
         text_polarity = text_sentiment['polarity']
         text_polarity_conf = text_sentiment['polarity_confidence']
 
@@ -91,14 +91,14 @@ def get_sentiment_bulk(reviews):
 
         sum_score = calculate_score(sum_polarity, sum_polarity_conf)
         reviews[i]['title_score'] = sum_score
- 
         reviews[i]['hybrid_score'] = getHybridScore(t, s, text_score, sum_score)
+
     return reviews
+
 
 # AYLIEN
 # text_matrix = np.zeros([5,5])
 # sum_matrix = np.zeros([5,5])
-
 
 # for file in files:
 #     text_fd = open('text_score.out', 'w')
@@ -112,7 +112,7 @@ def get_sentiment_bulk(reviews):
 #         r = int(rating[i])
 
 #         text_sentiment = aylien.Sentiment({'text': t})
-#     #     print(text_sentiment)
+#         print(text_sentiment)
 #         text_polarity = text_sentiment['polarity']
 #         text_polarity_conf = text_sentiment['polarity_confidence']
 
@@ -135,9 +135,5 @@ def get_sentiment_bulk(reviews):
 #             time.sleep(120)
 
         
-        
 #     text_fd.close()
 #     sum_fd.close()
-
-
-

@@ -6,6 +6,8 @@ From this paper:
 Based on:
     https://gist.github.com/voidfiles/1646117
     https://github.com/davidadamojr/TextRank
+
+Todo: This is slow
 """
 import io
 import itertools

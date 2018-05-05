@@ -68,12 +68,14 @@ def extractReviews(product_url, num_reviews):
 	total_reviews = 0
 
 	reviews =  []
-
 	print(total_pages)
 	for pageno in range(total_pages):
+
+		# Todo: this is brittle, use Amazon API
 		page = product_page + "/ref=cm_cr_getr_d_paging_btm_" + str(pageno) + "?ie=UTF8&reviewerType=all_reviews&pageNumber=" + str(pageno)
 		total = getReviews(page, product_name)
 		print("Total = " + str(total))
+
 		if total == 0 and total_reviews == 0:
 			return reviews, product_id, product_name, "Unsuccessful!! Retrieved only  " + str(total_reviews) + "  reviews"
 

@@ -7,45 +7,54 @@ import multi_senti_func
 import multi_prod_func
 import pandas as pd
 from werkzeug.utils import secure_filename
-# from sentiment import *
+from sentiment import *
 from amazon_review_crawler import *
 import summary_LSA
 import preprocessing
 import text_rank_summary
 import regenerate
 
+
 uploadFolder=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
-
-
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 allowedTypes = set(['xlsx'])
+
 app = Flask(__name__, template_folder=tmpl_dir)
 app.secret_key="my_secret_key"
-#docs=UploadSet('datafiles',DOCUMENTS)
 app.config['UPLOAD_FOLDER']=uploadFolder
+
+#docs=UploadSet('datafiles',DOCUMENTS)
 #configure_uploads(app,docs)
+
 
 def allowed_file(filename):
   return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedTypes
+
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/keyphrase_extraction")
 def keyphrase_extraction():
     return render_template("keyphrase.html")
+
+
 @app.route("/keyphrase_extraction/textrank")
 def keyphrase_extraction_textrank():
     return render_template("textrank.html")
+
 
 @app.route("/summarization")
 def text_summarization():
     return render_template("summarization.html")
 
+
 @app.route("/summarization/textrank")
 def text_summarization_textrank():
     return render_template("summarization_textrank.html")
+
 
 @app.route("/get_summarization", methods = ['POST'])
 def get_summarization():
@@ -85,6 +94,7 @@ def get_summarization():
     context['summarization'] = generation
     return render_template("summarization_result.html", **context)
 
+
 @app.route("/get_summarization_textrank", methods = ['POST'])
 def get_summarization_textrank():
     filename = request.form['name']
@@ -110,6 +120,7 @@ def get_summarization_textrank():
     context['summarization'] = textRank_result
     return render_template("summarization_text_rank_result.html", **context)
 
+
 @app.route('/upload',methods=['GET','POST'])
 def upload_file():
   if request.method == 'POST':
@@ -122,14 +133,11 @@ def upload_file():
       return render_template('upload.html', results = 'file not uploaded.')
 
 
-
-
-
-
-#nitesh
+# Nitesh
 @app.route("/sentiment_analysis_english")
 def sentiment_analysis():
     return render_template("sentiment.html")
+
 
 @app.route("/get_sentiment_score",methods=['POST'])
 def get_sentiment_score():
@@ -153,6 +161,7 @@ def saveReviews(product_name, reviews):
         writer.save()
     except:
         print("Error saving file")
+
 
 def getAggregatedScores(reviews):
     agg_title_score = 0
@@ -236,7 +245,6 @@ def get_crawler_sentiment_score():
     context['agg_text_score'] = agg_text_score
     context['agg_hybrid_score'] = agg_hybrid_score
 
- 
     return render_template("bulk_sentiment_result.html",**context)
 
 
@@ -244,6 +252,7 @@ def get_crawler_sentiment_score():
 @app.route("/crawler")
 def crawler():
     return render_template("crawler.html")
+
 
 @app.route("/get_amazon_file", methods=['POST'])
 def get_file():
@@ -260,12 +269,12 @@ def get_file():
     return render_template("crawler_result.html",**context)
 
 
-#yunsi
+# Yunsi
 @app.route("/sentiment_analysis_multilingual")
 def multilingual_analysis():
     return render_template("multi_senti.html")
 
-#yunsi
+
 @app.route("/get_senti_infor",methods=['POST'])
 def get_senti_infor():
     text = request.form['text']
@@ -295,7 +304,7 @@ def get_senti_infor():
     #print("Context: ",context)
     return render_template("multi_senti_score.html", **context)
 
-#yunsi
+
 @app.route("/survey_senti",methods=['POST'])
 def survey_senti():
     before_sur = request.form['before_sur']
@@ -319,7 +328,7 @@ def survey_senti():
     #print("Context: ",context)
     return render_template("multi_survey_score.html", **context)
 
-#yunsi
+
 @app.route("/product_senti",methods=['POST'])
 def product_senti():
     filenames = request.form['name']
@@ -347,7 +356,7 @@ def product_senti():
     #print("Context: ",context)
     return render_template("multi_product.html", **context)
 
-#yunsi
+
 @app.route("/column_senti",methods=['POST'])
 def column_senti():
     filenames = request.form['name_col']
@@ -385,6 +394,7 @@ def column_senti():
     #print("Context: ",context)
     return render_template("multi_col_score.html", **context)
 
+
 @app.route('/get_keyphrases',methods=['POST'])
 def get_keyphrases():
     stoppath = "SmartStoplist.txt"
@@ -417,6 +427,7 @@ def get_keyphrases():
     context['stem_counts']= stem_counts
     return render_template("keyphrase_result.html", **context)
 
+
 @app.route('/get_keyphrases_textrank',methods=['POST'])
 def get_keyphrases_textrank():
     filename=request.form['textrank_name']
@@ -431,6 +442,11 @@ def get_keyphrases_textrank():
     context=dict()
     context['keywords']=top_keywords
     return render_template("keyword_textrank.html",**context)
+
+
+########
+# Main #
+########
 
 if __name__=="__main__":
     app.run(debug=True)
