@@ -3,3 +3,5 @@
 WebApp/__pycache__/*
 WebApp/nohup.out
 .idea
+**/*.pyc
+/WebApp/test_data
