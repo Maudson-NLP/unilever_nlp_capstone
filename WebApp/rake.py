@@ -187,6 +187,7 @@ def generate_candidate_keywords(sentence_list, stopword_pattern, stop_word_list,
         if is_acceptable(phrase,min_char_length,min_words_length,max_words_length):
             phrase_list.append(phrase)
     return phrase_list
+
 ### generate lemmatized a sentence
 def get_wordnet_pos(treebank_tag):
 
@@ -200,6 +201,7 @@ def get_wordnet_pos(treebank_tag):
         return wordnet.ADV
     else:
         return ''
+
 def get_synonyms(word):
     synonyms = []
     for syn in wordnet.synsets(word):

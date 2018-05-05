@@ -1,17 +1,18 @@
-import numpy as np 
-import pandas as pd 
-from sklearn.model_selection import train_test_split 
+import re
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
 import nltk
 from nltk.corpus import stopwords
 from nltk.classify import SklearnClassifier
 
 import matplotlib.pyplot as plt
+from nltk.sentiment import util
 from googletrans import Translator
 from nltk.corpus import sentiwordnet as swn
-from nltk.sentiment import util 
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-import re
+
 
 debug = False
 test = True
@@ -19,10 +20,11 @@ test = True
 
 NON_BMP_RE = re.compile(u"[^\U00000000-\U0000d7ff\U0000e000-\U0000ffff]", flags=re.UNICODE)
 
-#translation
-def translation_to_eng(df):
 
+# Translation
+def translation_to_eng(df):
     translator = Translator()
+
     text_trans = []
     for i in range(len(df)):
         text = df[i]
@@ -39,7 +41,8 @@ def translation_to_eng(df):
             text_trans.append(None)
     return text_trans
 
-# tokenization
+
+# Tokenization
 def tokenization(df):
     nltk.download('sentiwordnet')
     reviews = [nltk.sent_tokenize(lines) for lines in df]
@@ -74,12 +77,14 @@ def tokenization(df):
         review_tokens.append(flattened_token)
     return review_tokens
 
+
 # POS
 def pos_mark(wtokens):
     pos_tag=[]
     for tk in wtokens:        
          pos_tag.append(nltk.pos_tag(tk))        
     return pos_tag
+
 
 #Senti Score
 def senti_score(pos_tag):
@@ -120,8 +125,6 @@ def senti_score(pos_tag):
                         else:
                             score_list[idx].append(score/len(synsets))
                     last_lemma = lemmatized
-                        
-                           
 
     #gaining each sentence sentiment score
     sentence_sentiment=[]
@@ -130,9 +133,11 @@ def senti_score(pos_tag):
             sentence_sentiment.append(sum([word_score for word_score in score_sent]))
         else:
             sentence_sentiment.append(float(0))
+
     #print("Sentiment for each sentence for:"+doc)
     #print(sentence_sentiment)
     return sentence_sentiment
+
 
 #vader
 def vader_senti_score(df):
@@ -145,10 +150,10 @@ def vader_senti_score(df):
         vader_text_score.append(com_score)
     return vader_text_score
 
+
 def adj_score_avg(df):
 	df['adj_score'] = df['text_Sentiment_Score'] + 2 * df['title_Sentiment_Score']
 	df['adj_senti_vader_score'] = df['Vader_text_score'] + df['Vader_title_score'] + df['adj_score']
 	product_score = df['adj_senti_vader_score'].mean()
+
 	return product_score
-
-
