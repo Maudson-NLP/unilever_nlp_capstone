@@ -11,3 +11,4 @@ networkx==2.1
 sklearn==0.19.1
 scipy==1.0.1
 matplotlib==2.2.2
+bs4==0.0.1
