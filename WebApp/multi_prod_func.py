@@ -16,28 +16,25 @@ import re
 debug = False
 test = True
 
+
+NON_BMP_RE = re.compile(u"[^\U00000000-\U0000d7ff\U0000e000-\U0000ffff]", flags=re.UNICODE)
+
 #translation
 def translation_to_eng(df):
-    emoji_pattern = re.compile(
-        u"(\ud83d[\ude00-\ude4f])|"  # emoticons
-        u"(\ud83c[\udf00-\uffff])|"  # symbols & pictographs (1 of 2)
-        u"(\ud83d[\u0000-\uddff])|"  # symbols & pictographs (2 of 2)
-        u"(\ud83d[\ude80-\udeff])|"  # transport & map symbols
-        u"(\ud83c[\udde0-\uddff])"  # flags (iOS)
-        "+", flags=re.UNICODE)
+
     translator = Translator()
     text_trans = []
     for i in range(len(df)):
         text = df[i]
-        # text_cl = str(emoji_pattern.sub(r'', text))
-        #if text_cl is not None:
-        try:
-            trans = translator.translate(text, 'en')
-            text_trans.append(trans.text)
-        except:
-            print("*****")
-            print(i)
-            print(text)
+        text_cl = NON_BMP_RE.sub(u'', text)
+        if text_cl is not None:
+            try:
+                trans = translator.translate(text_cl, 'en')
+                text_trans.append(trans.text)
+            except:
+                print("*****")
+                print(i)
+                print(text_cl)
         else:
             text_trans.append(None)
     return text_trans
@@ -65,8 +62,9 @@ def tokenization(df):
                 #review_neg_word.append(sent_neg_word)
                 
                 ##append tokenization
-
-                tok = nltk.word_tokenize(str(sent))
+                
+                sent_cl = NON_BMP_RE.sub(u'', sent.encode('ascii', 'ignore').decode('ascii'))
+                tok = nltk.word_tokenize(str(sent_cl))
                 word_token.append(tok)
             else:
                 #b_neg.append(None)

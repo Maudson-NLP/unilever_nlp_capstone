@@ -25,8 +25,8 @@ def calculate_score(polarity, polarity_conf):
 # num_reviews = len(rating)
 
 # AYLIEN
-# aylien = apis.aylienapi.aylienapiclient.textapi.Client("4df6473c", "f827888e31b6b52f85a6061eb3f18ad1")
-# aylien = apis.aylienapi.aylienapiclient.textapi.Client("8f14979e", "4b1ff15f606a003e025a93070a822d54")
+aylien = textapi.Client("4df6473c", "f827888e31b6b52f85a6061eb3f18ad1")
+#aylien = apis.aylienapi.aylienapiclient.textapi.Client("8f14979e", "4b1ff15f606a003e025a93070a822d54")
 
 # # Textalytics
 # api = 'http://api.meaningcloud.com/sentiment-2.0'
