@@ -333,17 +333,25 @@ def survey_senti():
 def product_senti():
     filenames = request.form['name']
     df = pd.read_excel(filenames)
-    #print("Get Form data")
+
+    print 'Data frame shape: ', df.shape
+
     text_t = multi_prod_func.translation_to_eng(df['text'])
+    print 'Finished translation: ', len(text_t)
     title_t = multi_prod_func.translation_to_eng(df['title'])
+
     text_token = multi_prod_func.tokenization(text_t)
+    print 'Finished tokenization, length: ', len(text_token)
     title_token = multi_prod_func.tokenization(title_t)
+
     text_tag = multi_prod_func.pos_mark(text_token)
+    print 'Finished pos_mark, length: ', len(text_tag)
     title_tag = multi_prod_func.pos_mark(title_token)
-    text_tag = multi_prod_func.pos_mark(text_token)
-    title_tag = multi_prod_func.pos_mark(title_token)
+
     text_sentiment = multi_prod_func.senti_score(text_tag)
+    print 'Finished senti_score, length: ', len(text_sentiment)
     title_sentiment = multi_prod_func.senti_score(title_tag)
+
     df['text_Sentiment_Score'] = text_sentiment
     df['title_Sentiment_Score'] = title_sentiment
     vader_text_score = multi_prod_func.vader_senti_score(text_t)

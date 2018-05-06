@@ -27,13 +27,14 @@ def translation_to_eng(df):
 
     text_trans = []
     for i in range(len(df)):
-        text = df[i]
+        text = df[i].encode('utf-8')
         text_cl = NON_BMP_RE.sub(u'', text)
         if text_cl is not None:
             try:
                 trans = translator.translate(text_cl, 'en')
                 text_trans.append(trans.text)
             except:
+                text_trans.append('Translation error')
                 print("*****")
                 print(i)
                 print(text_cl)
@@ -144,7 +145,7 @@ def vader_senti_score(df):
     analyzer = SentimentIntensityAnalyzer()
     vader_text_score = []
     for sentence in df:
-        analyzer = SentimentIntensityAnalyzer()
+        sentence = sentence.encode('utf-8')
         vs = analyzer.polarity_scores(sentence)
         com_score = vs['compound']
         vader_text_score.append(com_score)

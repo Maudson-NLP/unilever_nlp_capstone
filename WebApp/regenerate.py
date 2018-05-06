@@ -9,6 +9,7 @@ import summary_LSA
 import os
 import io
 
+
 def spell_check(sentence_list):
     ## the input is a list of sentences
     with open('dico_spell.json', 'r') as f:
@@ -22,6 +23,7 @@ def spell_check(sentence_list):
         sentence_list[i] = str(' '.join(sentence_split))
 
     return sentence_list
+
 
 def do_stemming(sentences):
 	"""
@@ -41,6 +43,7 @@ def do_stemming(sentences):
 		stemmed_sentences.append(' '.join(stemmed_sentence))
 
 	return stemmed_sentences
+
 
 def do_stem_for_single_sentence(sentence):
     stemmer = PorterStemmer()
@@ -143,6 +146,7 @@ def handle_neg(candidate):
 
     return ' '.join(new_candidate)
 
+
 def tokenization(text):
     # tokenize the sentence and word
     # text
@@ -155,12 +159,15 @@ def tokenization(text):
         else:
             wtokens.append(None)
     return wtokens
+
+
 # generate POS tag
 def pos_mark(wtokens):
     pos_tag=[]
     for tk in wtokens:
          pos_tag.append(nltk.pos_tag(tk))
     return pos_tag
+
 
 good_attitude = ["nice", "great", "good", "like", "love", "well", "fan", "recommend"]
 bad_attitude = ["try something else"] # or negation word before good_attitudes
@@ -181,7 +188,6 @@ def get_attributes(data_list):
             if (item[1] == "JJ") and (item[0] not in good_attitude and item[0] not in bad_attitude) and len(item[0]) > 1 and item[0] not in adverb:
                 candidates.add(item[0])
     return candidates
-
 
 
 def summary_attitude(data, good, bad):
@@ -206,20 +212,17 @@ def summary_attitude(data, good, bad):
         attitude = "The product is not recommended."
     return attitude
 
+
 def penn_to_wn(tag):
     """ Convert between a Penn Treebank tag to a simplified Wordnet tag """
     if tag.startswith('N'):
         return 'n'
-
     if tag.startswith('V'):
         return 'v'
-
     if tag.startswith('J'):
         return 'a'
-
     if tag.startswith('R'):
         return 'r'
-
     return None
 
 
@@ -232,6 +235,7 @@ def tagged_to_synset(word, tag):
         return wn.synsets(word, wn_tag)[0]
     except:
         return None
+
 
 def sentence_similarity(sentence1, sentence2):
     """ compute the sentence similarity using Wordnet """
@@ -262,6 +266,7 @@ def sentence_similarity(sentence1, sentence2):
     # Average the values
     score /= count
     return score
+
 
 # sentences = [
 #     "Dogs are awesome.",
