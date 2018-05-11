@@ -8,7 +8,7 @@ import multi_prod_func
 import pandas as pd
 from werkzeug.utils import secure_filename
 from sentiment import *
-from amazon_review_crawler import *
+# from amazon_review_crawler import *
 import summary_LSA
 import preprocessing
 import text_rank_summary

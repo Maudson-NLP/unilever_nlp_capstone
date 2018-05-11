@@ -1,6 +1,6 @@
 import requests
 import os
-from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 import pprint 
 import json
 import re
