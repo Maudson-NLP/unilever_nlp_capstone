@@ -7,7 +7,6 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.classify import SklearnClassifier
 
-import matplotlib.pyplot as plt
 from nltk.sentiment import util
 from googletrans import Translator
 from nltk.corpus import sentiwordnet as swn

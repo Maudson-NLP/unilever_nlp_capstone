@@ -8,7 +8,6 @@ import nltk
 from nltk.corpus import stopwords
 from nltk.classify import SklearnClassifier
 
-import matplotlib.pyplot as plt
 import goslate
 #import urllib.request
 from googletrans import Translator
