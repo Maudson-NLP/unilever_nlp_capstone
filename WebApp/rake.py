@@ -216,26 +216,31 @@ def get_synonyms(word):
 def lemmatize_sentence(s):
     verb_list = ['is','are','am']
     lemma = WordNetLemmatizer()
-    new_sentence = u''
+    new_sentence = ''
     word_token = word_tokenize(s)
     pos_tagging = nltk.pos_tag(word_token)
 
     for pair in pos_tagging:
+        pair = list(pair)
+        # This is where we do the decoding:
+        pair[0] = pair[0].decode('utf-8')
+        pair[1] = pair[1].decode('utf-8')
+
         word_net_pos = get_wordnet_pos(pair[1])
         if word_net_pos != '' and pair[0] not in verb_list:
-            word = lemma.lemmatize(pair[0].decode('utf-8'), get_wordnet_pos(pair[1].decode('utf-8')))
+            word = lemma.lemmatize(pair[0], get_wordnet_pos(pair[1]))
         else:
-            word = pair[0].decode('utf-8')
+            word = pair[0]
 
-        if new_sentence == u'':
-            new_sentence += word.decode('utf-8')
+        if new_sentence == '':
+            new_sentence += word
         else:
             print(new_sentence)
             print(type(new_sentence))
 
             print(word)
             print(type(word))
-            new_sentence += u' ' + word.encode('utf-8', 'replace')
+            new_sentence += ' ' + word
 
     return new_sentence
 
@@ -559,8 +564,8 @@ def stem_candidate_keywords(phrase_list):
             else:
                 phrase_stem += ' ' + stemmer.stem(item)
 
-        phrase_list_stem.append(str(phrase_stem))
-        track_stem[phrase] = str(phrase_stem)
+        phrase_list_stem.append(phrase_stem)
+        track_stem[phrase] = phrase_stem
 
     # Compute reverse tracking
     track_stem_rev = {}
@@ -572,7 +577,7 @@ def stem_candidate_keywords(phrase_list):
 
     # Compute final list of keyphrase candidates
     final_list = list(set(phrase_list_stem))
-    final_list = [track_stem_rev[str(phrase)][0] for phrase in final_list]
+    final_list = [track_stem_rev[phrase][0] for phrase in final_list]
 
     return final_list, phrase_list_stem, track_stem
 
