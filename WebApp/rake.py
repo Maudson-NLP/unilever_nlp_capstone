@@ -235,11 +235,6 @@ def lemmatize_sentence(s):
         if new_sentence == '':
             new_sentence += word
         else:
-            print(new_sentence)
-            print(type(new_sentence))
-
-            print(word)
-            print(type(word))
             new_sentence += ' ' + word
 
     return new_sentence
