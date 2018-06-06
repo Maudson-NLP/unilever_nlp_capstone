@@ -22,6 +22,7 @@ NON_BMP_RE = re.compile(u"[^\U00000000-\U0000d7ff\U0000e000-\U0000ffff]", flags=
 
 # Translation
 def translation_to_eng(df):
+    df = df.dropna(axis=0, how='any').reset_index(drop=True)
     translator = Translator()
 
     text_trans = []
