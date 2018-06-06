@@ -214,21 +214,29 @@ def get_synonyms(word):
 
 
 def lemmatize_sentence(s):
-    verb_list=['is','are','am']
-    lemma=WordNetLemmatizer()
-    new_sentence=""
-    word_token=word_tokenize(s)
-    pos_tagging=nltk.pos_tag(word_token)
+    verb_list = ['is','are','am']
+    lemma = WordNetLemmatizer()
+    new_sentence = u''
+    word_token = word_tokenize(s)
+    pos_tagging = nltk.pos_tag(word_token)
+
     for pair in pos_tagging:
-        word_net_pos=get_wordnet_pos(pair[1])
-        if word_net_pos!='' and pair[0] not in verb_list:
-            word=lemma.lemmatize(pair[0],get_wordnet_pos(pair[1]))
+        word_net_pos = get_wordnet_pos(pair[1])
+        if word_net_pos != '' and pair[0] not in verb_list:
+            word = lemma.lemmatize(pair[0].decode('utf-8'), get_wordnet_pos(pair[1].decode('utf-8')))
         else:
-            word=pair[0]
-        if new_sentence=="":
-            new_sentence+=word
+            word = pair[0].decode('utf-8')
+
+        if new_sentence == u'':
+            new_sentence += word.decode('utf-8')
         else:
-            new_sentence+=" "+word
+            print(new_sentence)
+            print(type(new_sentence))
+
+            print(word)
+            print(type(word))
+            new_sentence += u' ' + word.encode('utf-8', 'replace')
+
     return new_sentence
 
 def lemmatize_sentence_list(sentence_list):
@@ -370,7 +378,7 @@ def spell_check(sentence_list):
         for k in range(len(sentence_split)):
             if sentence_split[k] in dico_spell.keys():
                 sentence_split[k] = dico_spell[sentence_split[k]]
-        sentence_list[i] = str(' '.join(sentence_split))
+        sentence_list[i] = str(' '.join(sentence_split).encode('utf-8'))
 
     return sentence_list
 

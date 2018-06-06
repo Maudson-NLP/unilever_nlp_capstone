@@ -1,30 +1,22 @@
 from flask import Flask, render_template,request,redirect, url_for, flash
-#from flask_uploads import UploadSet, configure_uploads,DOCUMENTS
 import os
 import rake
 import TextRank
 import multi_senti_func
 import multi_prod_func
-import pandas as pd
 from werkzeug.utils import secure_filename
 from sentiment import *
-# from amazon_review_crawler import *
-import summary_LSA
-import preprocessing
 import text_rank_summary
 import regenerate
 
 
 uploadFolder=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-allowedTypes = set(['xlsx'])
+allowedTypes = set(['xlsx', 'xls'])
 
 app = Flask(__name__, template_folder=tmpl_dir)
 app.secret_key="my_secret_key"
 app.config['UPLOAD_FOLDER']=uploadFolder
-
-#docs=UploadSet('datafiles',DOCUMENTS)
-#configure_uploads(app,docs)
 
 
 def allowed_file(filename):
@@ -58,28 +50,24 @@ def text_summarization_textrank():
 
 @app.route("/get_summarization", methods = ['POST'])
 def get_summarization():
-    # max_length_of_summary = request.form["max_length_of_summary"]
-    # number_of_concept = request.form["number_of_concept"]
-    # split_long_sentence = request.form["split_long_sentence"]
-    #lsa_result = summary_LSA.summarize(data = text)
     l = request.form["maxLength"]
     k = request.form["kconcept"]
     filename = request.form['name']
     surveys = pd.read_excel(filename, header=0)
     col_name = request.form['question']
     filter_by = request.form['filter_by']
-    print (filename)
-    print (col_name)
     product_id = request.form['product_id']
+
     if product_id != '':
         df = surveys.loc[surveys[filter_by] == product_id]
         col = df[col_name]
     else:
         col = surveys[col_name]
+
     text = ""
     for i in col.index:
         text = text + " " + col[i]
-    print(text)
+
     if text == "":
         text = request.form["text"]
     if text == "":
@@ -87,11 +75,11 @@ def get_summarization():
         origin = ""
     else:
         generation, origin = regenerate.generate(text, l=int(l), k=int(k))
-    print (generation)
-    print (origin)
+
     context = dict()
     context["origin_summary"] = origin
     context['summarization'] = generation
+
     return render_template("summarization_result.html", **context)
 
 
@@ -101,35 +89,38 @@ def get_summarization_textrank():
     surveys = pd.read_excel(filename, header=0)
     col_name = request.form['question']
     filter_by = request.form['filter_by']
-    print (filename)
-    print (col_name)
+
     product_id = request.form['product_id']
     if product_id != '':
         df = surveys.loc[surveys[filter_by] == product_id]
         col = df[col_name]
     else:
         col = surveys[col_name]
+
     text = ""
     for i in col.index:
         text = text + " " + col[i]
-    print(text)
+
     if text == "":
         text = request.form["text"]
+
     textRank_result = text_rank_summary.extract_sentences(text)
     context = dict()
     context['summarization'] = textRank_result
+
     return render_template("summarization_text_rank_result.html", **context)
 
 
 @app.route('/upload',methods=['GET','POST'])
 def upload_file():
   if request.method == 'POST':
-    print(request.files)
     f = request.files['file']
+
     if f and allowed_file(f.filename):
       f.save(secure_filename(f.filename))
       return render_template('upload.html', results = 'file uploaded successfully.')
     else:
+      print("Issue uploading file")
       return render_template('upload.html', results = 'file not uploaded.')
 
 
@@ -173,7 +164,6 @@ def getAggregatedScores(reviews):
         agg_title_score += review['title_score']
         agg_text_score += review['text_score']
         agg_hybrid_score += review['hybrid_score']
-
         total += 1
 
     agg_title_score /= total
@@ -228,7 +218,6 @@ def get_crawler_sentiment_score():
     context=dict()
 
     if len(reviews) == 0:
-        print("No reviews fetched")
         context['error'] = 1
         return render_template("bulk_error.html",**context)
 
@@ -291,6 +280,7 @@ def get_senti_infor():
     vander_text_senti_score = multi_senti_func.vader_senti_score(trans_text)
     vander_title_senti_score = multi_senti_func.vader_senti_score(trans_title)
     adjusted_score = multi_senti_func.adjusted_score(wn_text_senti_score,wn_title_senti_score,vander_text_senti_score,vander_title_senti_score)
+
     context = dict() #input back
     context['text'] = text #result
     context['title'] = title
@@ -301,7 +291,7 @@ def get_senti_infor():
     context['vander_text_senti_score']= vander_text_senti_score
     context['vander_title_senti_score']= vander_title_senti_score
     context['adjusted_score']= adjusted_score
-    #print("Context: ",context)
+
     return render_template("multi_senti_score.html", **context)
 
 
@@ -309,7 +299,7 @@ def get_senti_infor():
 def survey_senti():
     before_sur = request.form['before_sur']
     after_sur = request.form['after_sur']
-    #print("Get Form data")
+
     trans_bef = multi_senti_func.translation_to_eng(before_sur)
     trans_aft = multi_senti_func.translation_to_eng(after_sur)
     bef_token = multi_senti_func.tokenization(trans_bef)
@@ -318,6 +308,7 @@ def survey_senti():
     aft_pos = multi_senti_func.pos_mark(aft_token)
     wn_bef_senti_score = multi_senti_func.senti_score(bef_pos)
     wn_aft_senti_score = multi_senti_func.senti_score(aft_pos)
+
     context = dict() #input back
     context['before_sur'] = before_sur #result
     context['after_sur'] = after_sur
@@ -325,7 +316,7 @@ def survey_senti():
     context['trans_aft'] = trans_aft
     context['wn_bef_senti_score']= wn_bef_senti_score
     context['wn_aft_senti_score']= wn_aft_senti_score
-    #print("Context: ",context)
+
     return render_template("multi_survey_score.html", **context)
 
 
@@ -334,22 +325,18 @@ def product_senti():
     filenames = request.form['name']
     df = pd.read_excel(filenames)
 
-    print 'Data frame shape: ', df.shape
+    print('Data frame shape: ', df.shape)
 
     text_t = multi_prod_func.translation_to_eng(df['text'])
-    print 'Finished translation: ', len(text_t)
     title_t = multi_prod_func.translation_to_eng(df['title'])
 
     text_token = multi_prod_func.tokenization(text_t)
-    print 'Finished tokenization, length: ', len(text_token)
     title_token = multi_prod_func.tokenization(title_t)
 
     text_tag = multi_prod_func.pos_mark(text_token)
-    print 'Finished pos_mark, length: ', len(text_tag)
     title_tag = multi_prod_func.pos_mark(title_token)
 
     text_sentiment = multi_prod_func.senti_score(text_tag)
-    print 'Finished senti_score, length: ', len(text_sentiment)
     title_sentiment = multi_prod_func.senti_score(title_tag)
 
     df['text_Sentiment_Score'] = text_sentiment
@@ -361,7 +348,7 @@ def product_senti():
     product_score = multi_prod_func.adj_score_avg(df)
     context = dict() #input back
     context['product_score'] = product_score #result
-    #print("Context: ",context)
+
     return render_template("multi_product.html", **context)
 
 
@@ -387,19 +374,20 @@ def column_senti():
     df['Adj_score'] = df['text_Sentiment_Score'] + df['Vader_text_score']
     sent_score = df['text_Sentiment_Score'].mean()
     vader_score = df['Vader_text_score'].mean()
+
     if ana_type == 'review':
         col_score = df['Adj_score'].mean()
-        context = dict() #input back
+        context = dict()
         context['sent_score'] = sent_score 
         context['vader_score'] = vader_score 
-        context['col_score'] = col_score #result
+        context['col_score'] = col_score
     elif ana_type == 'survey':
         col_score = df['text_Sentiment_Score'].mean()
-        context = dict() #input back
+        context = dict()
         context['sent_score'] = sent_score 
         context['vader_score'] = vader_score 
-        context['col_score'] = col_score #result
-    #print("Context: ",context)
+        context['col_score'] = col_score
+
     return render_template("multi_col_score.html", **context)
 
 
@@ -411,8 +399,8 @@ def get_keyphrases():
     col_name=request.form['question']
     filter_by=request.form['filter_by']
     text=""
-    #col=surveys[col_name]
     product_id=request.form['product_id']
+
     if product_id!='':
         df=surveys.loc[surveys[filter_by]==product_id]
         col=df[col_name]
@@ -420,7 +408,7 @@ def get_keyphrases():
         col=surveys[col_name]
     for i in col.index:
         text=text+" "+col[i]
-    print(text)
+
     min_char_length=request.form['min_char_length']
     min_words_length=request.form['min_words_length']
     max_words_length=request.form['max_words_length']
@@ -433,6 +421,7 @@ def get_keyphrases():
     context['keywords_score'] = keywords_score
     context['keywords_counts'] = keywords_counts
     context['stem_counts']= stem_counts
+
     return render_template("keyphrase_result.html", **context)
 
 
@@ -449,6 +438,7 @@ def get_keyphrases_textrank():
     top_keywords=TextRank.extractKeyphrases(text,int(top_n))
     context=dict()
     context['keywords']=top_keywords
+
     return render_template("keyword_textrank.html",**context)
 
 
