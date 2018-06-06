@@ -117,7 +117,7 @@ def upload_file():
     f = request.files['file']
 
     if f and allowed_file(f.filename):
-      f.save(secure_filename(f.filename))
+      f.save(f.filename)
       return render_template('upload.html', results = 'file uploaded successfully.')
     else:
       print("Issue uploading file")
