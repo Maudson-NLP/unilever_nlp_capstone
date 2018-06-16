@@ -10,7 +10,7 @@ import text_rank_summary
 import regenerate
 
 
-uploadFolder=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
+uploadFolder = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads')
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 allowedTypes = set(['xlsx', 'xls'])
 
@@ -111,7 +111,7 @@ def get_summarization():
             text = request.form["text"]
         if text == "":
             generation = ""
-            origin = ""
+            original = ""
         else:
             generation, original = regenerate.generate(text, l=int(l), k=int(k))
         results.append(('Results:', generation, original))
@@ -361,37 +361,79 @@ def column_senti():
     ana_type = request.form['type']
     df = pd.read_excel(filenames)
     input_col = request.form['col']
-    id_col = request.form['id_col']
-    id_name = request.form['id_name']
-    if id_col != '': #select id
-        df = df.loc[df[id_col] == id_name]
-    df_col = df[input_col]
-    text_t = multi_prod_func.translation_to_eng(df_col)
-    text_token = multi_prod_func.tokenization(text_t)
-    text_tag = multi_prod_func.pos_mark(text_token)
-    text_tag = multi_prod_func.pos_mark(text_token)
-    text_sentiment = multi_prod_func.senti_score(text_tag)
-    df['text_Sentiment_Score'] = text_sentiment
-    vader_text_score = multi_prod_func.vader_senti_score(text_t)
-    df['Vader_text_score'] = vader_text_score
-    df['Adj_score'] = df['text_Sentiment_Score'] + df['Vader_text_score']
-    sent_score = df['text_Sentiment_Score'].mean()
-    vader_score = df['Vader_text_score'].mean()
+    group_by = request.form['group_by']
 
-    if ana_type == 'review':
-        col_score = df['Adj_score'].mean()
+    results = []
+    if group_by == '':
+      df_col = df[input_col]
+      text_t = multi_prod_func.translation_to_eng(df_col)
+      text_token = multi_prod_func.tokenization(text_t)
+      text_tag = multi_prod_func.pos_mark(text_token)
+
+      # Sentiment from NLTK SentiWordNet
+      text_sentiment = multi_prod_func.senti_score(text_tag)
+      df['sentiwordnet_score'] = text_sentiment
+
+      # Sentiment from Vadersentiment
+      vader_text_score = multi_prod_func.vader_senti_score(text_t)
+      df['vader_score'] = vader_text_score
+
+      df['adj_score'] = df['sentiwordnet_score'] + df['vader_score']
+      sent_score = df['sentiwordnet_score'].mean()
+      vader_score = df['vader_score'].mean()
+
+      if ana_type == 'review':
+        col_score = df['adj_score'].mean()
         context = dict()
-        context['sent_score'] = sent_score 
-        context['vader_score'] = vader_score 
+        context['sent_score'] = sent_score
+        context['vader_score'] = vader_score
         context['col_score'] = col_score
-    elif ana_type == 'survey':
-        col_score = df['text_Sentiment_Score'].mean()
+      elif ana_type == 'survey':
+        col_score = df['sentiwordnet_score'].mean()
         context = dict()
-        context['sent_score'] = sent_score 
-        context['vader_score'] = vader_score 
+        context['sent_score'] = sent_score
+        context['vader_score'] = vader_score
         context['col_score'] = col_score
 
-    return render_template("multi_col_score.html", **context)
+      results.append(('Results:', context))
+
+    elif group_by != '':
+      for group in df[group_by].unique():
+        df_sub = df.loc[df[group_by] == group]
+
+        df_col = df_sub[input_col]
+        text_t = multi_prod_func.translation_to_eng(df_col)
+        text_token = multi_prod_func.tokenization(text_t)
+        text_tag = multi_prod_func.pos_mark(text_token)
+
+        # Sentiment from NLTK SentiWordNet
+        text_sentiment = multi_prod_func.senti_score(text_tag)
+        df_sub['sentiwordnet_score'] = text_sentiment
+
+        # Sentiment from Vadersentiment
+        vader_text_score = multi_prod_func.vader_senti_score(text_t)
+        df_sub['vader_score'] = vader_text_score
+
+        df_sub['adj_score'] = df_sub['sentiwordnet_score'] + df_sub['vader_score']
+        sent_score = df_sub['sentiwordnet_score'].mean()
+        vader_score = df_sub['vader_score'].mean()
+
+        if ana_type == 'review':
+            col_score = df_sub['adj_score'].mean()
+            context = dict()
+            context['sent_score'] = sent_score
+            context['vader_score'] = vader_score
+            context['col_score'] = col_score
+        elif ana_type == 'survey':
+            col_score = df_sub['sentiwordnet_score'].mean()
+            context = dict()
+            context['sent_score'] = sent_score
+            context['vader_score'] = vader_score
+            context['col_score'] = col_score
+
+        results.append((group, context))
+
+    return render_template("multi_col_score.html", **{'results': results})
 
 
 @app.route('/get_keyphrases',methods=['POST'])
