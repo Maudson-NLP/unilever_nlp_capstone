@@ -20,7 +20,7 @@ def spell_check(sentence_list):
         for k in range(len(sentence_split)):
             if sentence_split[k] in dico_spell.keys():
                 sentence_split[k] = dico_spell[sentence_split[k]]
-        sentence_list[i] = str(' '.join(sentence_split))
+        sentence_list[i] = ' '.join(sentence_split)
 
     return sentence_list
 
@@ -154,7 +154,7 @@ def tokenization(text):
     wtokens = []
     for sent in sent_token:
         if sent is not None:
-            tok = nltk.word_tokenize(str(sent))
+            tok = nltk.word_tokenize(sent)
             wtokens.append(tok)
         else:
             wtokens.append(None)
@@ -292,7 +292,7 @@ def generate(data, l, k):
     stemmer = PorterStemmer()
     for j in candidates:
         j = j.lower()
-        contain.add(str(stemmer.stem(j)))
+        contain.add(stemmer.stem(j))
 
     candidates = list(contain)
     print (candidates)

@@ -25,35 +25,31 @@ Description: A two-column, fixed-width template.
     <div id="logo">
       <center><a href="/"><image src = "static/images/unilever.png" height="140px" margin="20px"></image></a></center>
     </div>
-    <!-- end header -->
+
     <div id="menu">
       <ul>
-            <li class='first'><a href="/keyphrase_extraction">Keyphrase Extraction page</a></li>
-    <li><a href="/summarization">Summarization Page</a></li>
-<!--<li><a href="/sentiment_analysis_english">Sentiment Analysis English</a></li>-->
-    <li><a href="/sentiment_analysis_multilingual">Sentiment Analysis Multi-Lingual</a></li>
-    <li><a href="/crawler">Amazon Crawler</a></li>
-
+        <li class='first'><a href="/keyphrase_extraction">Keyphrase Extraction page</a></li>
+        <li><a href="/summarization">Summarization Page</a></li>
+        <li><a href="/sentiment_analysis_multilingual">Sentiment Analysis Multi-Lingual</a></li>
+        <li><a href="/crawler">Amazon Crawler</a></li>
       </ul>
     </div>
     
   </div>
-  <!-- end sidebar -->
+
   <div id="content">
     <div><img src="static/images/img08.jpg" alt="" width="740" height="220" /></div>
     <div class="boxed">
       <h1 class="title2"><center>Welcome to Unilever NLP Page !</center></h1>
       <h1 class="title2"><center>Text Summarization Using Improved Latent Semantic Analysis </center></h1>
-      <!--<h3><a href="https://unilever-nlp.herokuapp.com/index.html">Try Text Summarization Using LSA from Last Semester</a></h3>-->
+
       <form method="POST" action="/get_summarization">
           <p>Input the file name that you want to extract: (eg: Beauty_review.xlsx)</p>
           <input type="text" name="name">
           <p>Input the question you want to extract/Column Name: (eg: reviewText)</p>
           <input type="text" name="question">
-          <p>Input which column you want to filter your row by: (eg: productID)</p>
-          <input type="text" name="filter_by">
-          <p>Input the product ID you want to extract reviews for/Row Name: (eg: B000AO2NXS)</p>
-          <input type="text" name="product_id">
+          <p>Input column you want to group rows by: (eg: productID)</p>
+          <input type="text" name="group_by">
           <p> Or input the summarization you want to improved: </p>
           <textarea type="text" name="text"></textarea>
           <p>Input the max length of summary (in words) (eg: 100)</p>
@@ -61,14 +57,11 @@ Description: A two-column, fixed-width template.
           <p>Input the number of top word concepts to incorporate (eg: 10)</p>
           <input type="text" name="kconcept">
           <p><input type="submit" value="Submit"></p>
-
       </form>
-      <p><a href="/summarization/textrank">Try Summarization Using TextRank</a></p>
 
+      <p><a href="/summarization/textrank">Try Summarization Using TextRank</a></p>
     </div>
-    
   </div>
 
-<!-- end page -->
 </body>
 </html>

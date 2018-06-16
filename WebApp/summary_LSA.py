@@ -160,7 +160,7 @@ def sentence_add_loop(vectors, sentences, S, B, L):
                 break
 
     # print("Final sentence count: " + str(len(S)))
-    return [str(e) for e in S]
+    return [e for e in S]
 
 def summarize(
         data,

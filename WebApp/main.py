@@ -57,33 +57,30 @@ def get_summarization():
     col_name = request.form['question']
     group_by = request.form['group_by']
 
+    results = []
+
     if group_by != '':
 
-        for g in surveys[group_by].unique():
-            df = surveys.loc[surveys[group_by] == g]
-            col = df[col_name]
+        for group in surveys[group_by].unique():
+            df = surveys.loc[surveys[group_by] == group]
+            text = df[col_name].str.cat(sep=' ')
+            generation, original = regenerate.generate(text, l=int(l), k=int(k))
 
+            results.append((group, generation, original))
 
     else:
-        col = surveys[col_name]
+        text = surveys[col_name].str.cat(sep=' ')
 
-    text = ""
-    for i in col.index:
-        text = text + " " + col[i]
+        if text == "":
+            text = request.form["text"]
+        if text == "":
+            generation = ""
+            origin = ""
+        else:
+            generation, original = regenerate.generate(text, l=int(l), k=int(k))
+        results.append(('Results:', generation, original))
 
-    if text == "":
-        text = request.form["text"]
-    if text == "":
-        generation = ""
-        origin = ""
-    else:
-        generation, origin = regenerate.generate(text, l=int(l), k=int(k))
-
-    context = dict()
-    context["origin_summary"] = origin
-    context['summarization'] = generation
-
-    return render_template("summarization_result.html", **context)
+    return render_template('summarization_result.html', **{'results': results})
 
 
 @app.route("/get_summarization_textrank", methods = ['POST'])

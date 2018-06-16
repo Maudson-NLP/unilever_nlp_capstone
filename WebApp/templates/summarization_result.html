@@ -40,12 +40,15 @@ Description: A two-column, fixed-width template.
     <div><img src="static/images/img08.jpg" alt="" width="740" height="220" /></div>
     <div class="boxed">
       <h1 class="title2"> Text Summarization Result Using Latent Semantic Analysis</h1>
-      <p>{{origin_summary}}</p>
       <h1 class="title2"><center>Text Summarization Result Using Improved Latent Semantic Analysis with similarity detection.</center></h1>
-      <h2>Summarization</h2>
-      <p>
-        {{summarization}}
-      <p>
+
+        {% for r in results %}
+            <h1>{{ r[0] }}</h1>
+            <h3>Improved:</h3>
+            <p>{{ r[1] }}</p>
+            <h3>Original:</h3>
+            <p>{{ r[2] }}<p>
+        {% endfor %}
 
     </div>
   </div>
