@@ -23,6 +23,10 @@ def allowed_file(filename):
   return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedTypes
 
 
+######################
+# Template Endpoints #
+######################
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -46,6 +50,38 @@ def text_summarization():
 @app.route("/summarization/textrank")
 def text_summarization_textrank():
     return render_template("summarization_textrank.html")
+
+
+@app.route("/sentiment_analysis_multilingual")
+def multilingual_analysis():
+    return render_template("multi_senti.html")
+
+
+@app.route("/sentiment_analysis_english")
+def sentiment_analysis():
+    return render_template("sentiment.html")
+
+
+@app.route("/crawler")
+def crawler():
+    return render_template("crawler.html")
+
+
+#################
+# API Endpoints #
+#################
+
+@app.route('/upload',methods=['GET','POST'])
+def upload_file():
+  if request.method == 'POST':
+    f = request.files['file']
+
+    if f and allowed_file(f.filename):
+      f.save(f.filename)
+      return render_template('upload.html', results = 'file uploaded successfully.')
+    else:
+      print("Issue uploading file")
+      return render_template('upload.html', results = 'file not uploaded.')
 
 
 @app.route("/get_summarization", methods = ['POST'])
@@ -109,25 +145,6 @@ def get_summarization_textrank():
     context['summarization'] = textRank_result
 
     return render_template("summarization_text_rank_result.html", **context)
-
-
-@app.route('/upload',methods=['GET','POST'])
-def upload_file():
-  if request.method == 'POST':
-    f = request.files['file']
-
-    if f and allowed_file(f.filename):
-      f.save(f.filename)
-      return render_template('upload.html', results = 'file uploaded successfully.')
-    else:
-      print("Issue uploading file")
-      return render_template('upload.html', results = 'file not uploaded.')
-
-
-# Nitesh
-@app.route("/sentiment_analysis_english")
-def sentiment_analysis():
-    return render_template("sentiment.html")
 
 
 @app.route("/get_sentiment_score",methods=['POST'])
@@ -237,12 +254,6 @@ def get_crawler_sentiment_score():
     return render_template("bulk_sentiment_result.html",**context)
 
 
-#nitesh
-@app.route("/crawler")
-def crawler():
-    return render_template("crawler.html")
-
-
 @app.route("/get_amazon_file", methods=['POST'])
 def get_file():
     product_url=request.form['product_url']
@@ -256,12 +267,6 @@ def get_file():
     context['product_name']=product_name
     context['reviews']=reviews
     return render_template("crawler_result.html",**context)
-
-
-# Yunsi
-@app.route("/sentiment_analysis_multilingual")
-def multilingual_analysis():
-    return render_template("multi_senti.html")
 
 
 @app.route("/get_senti_infor",methods=['POST'])
