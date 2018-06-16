@@ -268,21 +268,6 @@ def sentence_similarity(sentence1, sentence2):
     return score
 
 
-# sentences = [
-#     "Dogs are awesome.",
-#     "Some gorgeous creatures are felines.",
-#     "Dolphins are swimming mammals.",
-#     "Cats are beautiful animals.",
-# ]
-#
-# focus_sentence = "Cats are beautiful animals."
-#
-# for sentence in sentences:
-#     print "Similarity(\"%s\", \"%s\") = %s" % (focus_sentence, sentence, sentence_similarity(focus_sentence, sentence))
-#     print "Similarity(\"%s\", \"%s\") = %s" % (sentence, focus_sentence, sentence_similarity(sentence, focus_sentence))
-#     print
-
-
 def generate(data, l, k):
     if l == None:
         l = 100
@@ -296,11 +281,6 @@ def generate(data, l, k):
     data = lsa
     print (5)
     print (data)
-    # t = text_rank_summary.extract_sentences(data)
-    # t_list = t.split()
-    # for i in range(len(t_list)):
-    #     if  t_list[i] == "I" or t_list[i] == "i":
-    #         t_list[i] = "Customers"
 
     data = data.split(".")
     data = spell_check(data)
@@ -332,25 +312,8 @@ def generate(data, l, k):
                         #print temperate
                         temp_list.add(single_sentence)
                         candidates.remove(single)
-            #print candidates
-            # for can in candidates:
-            #     temperate = do_stem_for_single_sentence(single_sentence)
-            #     if can in temperate:
-            #         temp_list.add(single_sentence)
-            #         candidates.remove(can)
-            #         print candidates
 
     temp_list = list(temp_list)
-    # for word in candidates:
-    #     if word not in good_attitude and word not in bad_attitude:
-    #         for single_sentence in data:
-    #             if word in single_sentence:
-    #
-    #                 for i in single_sentence.split(" "):
-    #                     print i
-    #                     if i not in good_attitude + bad_attitude:
-    #                         temp_list.add(single_sentence + ".")
-    #                         break
 
     data = do_stemming(data)
     for i in range(len(data)):
@@ -361,19 +324,3 @@ def generate(data, l, k):
         res = res + i  + "."
     print (attitude + " " + res)
     return (attitude + " " + res, lsa)
-
-# def read_data_from_txt():
-#     articles = os.listdir("training")
-#     for article in articles:
-#         if article == "Dove_Body_Wash.txt":
-#             print('Reading articles/' + article)
-#             article_file = io.open('training/' + article, 'r')
-#             text = article_file.read()
-#
-#     return text
-# data = read_data_from_txt()
-# a, p = generate(data)
-# print (1)
-# print (a)
-# print (2)
-# print (p)

@@ -1,13 +1,5 @@
 import re
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split
-
 import nltk
-from nltk.corpus import stopwords
-from nltk.classify import SklearnClassifier
-
-from nltk.sentiment import util
 from googletrans import Translator
 from nltk.corpus import sentiwordnet as swn
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
@@ -35,7 +27,7 @@ def translation_to_eng(df):
                 text_trans.append(trans.text)
             except:
                 text_trans.append('Translation error')
-                print("*****")
+                print('Translation error for text:')
                 print(i)
                 print(text_cl)
         else:

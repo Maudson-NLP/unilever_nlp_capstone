@@ -27,46 +27,49 @@ Description: A two-column, fixed-width template.
     <div id="logo">
       <center><a href="/"><image src = "static/images/unilever.png" height="140px" margin="20px"></image></a></center>
     </div>
-    <!-- end header -->
+
     <div id="menu">
       <ul>
-            <li class='first'><a href="/keyphrase_extraction">Keyphrase Extraction page</a></li>
-    <li><a href="/summarization">Summarization Page</a></li>
-<!--<li><a href="/sentiment_analysis_english">Sentiment Analysis English</a></li>-->
-    <li><a href="/sentiment_analysis_multilingual">Sentiment Analysis Multi-Lingual</a></li>
-    <li><a href="/crawler">Amazon Crawler</a></li>
-
+        <li class='first'><a href="/keyphrase_extraction">Keyphrase Extraction page</a></li>
+        <li><a href="/summarization">Summarization Page</a></li>
+        <li><a href="/sentiment_analysis_multilingual">Sentiment Analysis Multi-Lingual</a></li>
+        <li><a href="/crawler">Amazon Crawler</a></li>
       </ul>
     </div>
     
   </div>
-  <!-- end sidebar -->
+
   <div id="content">
     <div><img src="static/images/img08.jpg" alt="" width="740" height="220" /></div>
     <div class="boxed">
       <h1 class="title2"><center>Keyphrase Extraction Result Using Rake</center></h1>
-      <h2>Keyphrase and scores</h2>
-      <div>
-        {% for n in keywords_score %}
-        <div>{{n[0]}} {{"{0:.2f}".format(n[1])}}</div>
-        {% endfor %}
-      </div>
-      <h2>Keyphrase and counts</h2>
-      <div>
-        {% for n in keywords_counts %}
-        <div>{{n[0]}} {{n[1]}}</div>
-        {% endfor %}
-      </div>
-      <h2>Stem and counts</h2>
-      <div>
-        {% for n in stem_counts %}
-      <div>{{n[0]}} {{n[1]}}</div>
-        {% endfor %}
-      </div>
+        <div>
+            {% for c in context %}
+                <h1>{{c[0]}}</h1>
+                <h3>Keyphrase and scores</h3>
+                <div>
+                    {% for n in c[1] %}
+                        <div>{{n[0]}} {{"{0:.2f}".format(n[1])}}</div>
+                    {% endfor %}
+                </div>
+                <h3>Keyphrase and counts</h3>
+                <div>
+                    {% for n in c[2] %}
+                        <div>{{n[0]}} {{n[1]}}</div>
+                    {% endfor %}
+                </div>
+                <h3>Stem and counts</h3>
+                <div>
+                    {% for n in c[3] %}
+                        <div>{{n[0]}} {{n[1]}}</div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
     </div>
     
   </div>
 
-<!-- end page -->
+
 </body>
 </html>

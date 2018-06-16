@@ -55,12 +55,15 @@ def get_summarization():
     filename = request.form['name']
     surveys = pd.read_excel(filename, header=0)
     col_name = request.form['question']
-    filter_by = request.form['filter_by']
-    product_id = request.form['product_id']
+    group_by = request.form['group_by']
 
-    if product_id != '':
-        df = surveys.loc[surveys[filter_by] == product_id]
-        col = df[col_name]
+    if group_by != '':
+
+        for g in surveys[group_by].unique():
+            df = surveys.loc[surveys[group_by] == g]
+            col = df[col_name]
+
+
     else:
         col = surveys[col_name]
 
@@ -320,12 +323,10 @@ def survey_senti():
     return render_template("multi_survey_score.html", **context)
 
 
-@app.route("/product_senti",methods=['POST'])
+@app.route("/product_senti", methods=['POST'])
 def product_senti():
     filenames = request.form['name']
     df = pd.read_excel(filenames)
-
-    print('Data frame shape: ', df.shape)
 
     text_t = multi_prod_func.translation_to_eng(df['text'])
     title_t = multi_prod_func.translation_to_eng(df['title'])
@@ -393,36 +394,53 @@ def column_senti():
 
 @app.route('/get_keyphrases',methods=['POST'])
 def get_keyphrases():
-    stoppath = "SmartStoplist.txt"
-    filename=request.form['name']
-    surveys=pd.read_excel(filename,header=0)
-    col_name=request.form['question']
-    filter_by=request.form['filter_by']
-    text=""
-    product_id=request.form['product_id']
+    stoppath = 'SmartStoplist.txt'
+    filename = request.form['name']
+    surveys = pd.read_excel(filename, header=0)
+    col_name = request.form['question']
+    group_by = request.form['group_by']
 
-    if product_id!='':
-        df=surveys.loc[surveys[filter_by]==product_id]
-        col=df[col_name]
+    min_char_length = int(request.form['min_char_length'])
+    min_words_length = int(request.form['min_words_length'])
+    max_words_length = int(request.form['max_words_length'])
+    min_keyword_frequency = int(request.form['min_keyword_frequency'])
+    trade_off = float(request.form['trade_off'])
+    top_n = int(request.form['top_n'])
+
+    rake_object = rake.Rake(
+        stoppath,
+        min_char_length,
+        min_words_length,
+        max_words_length,
+        min_keyword_frequency,
+        1, 3, 2)
+
+    grouped_results = []
+
+    if group_by != '':
+        for group in surveys[group_by].unique():
+            text = ''
+            surveys_subset = surveys.loc[surveys[group_by] == group]
+            col = surveys_subset[col_name]
+
+            for i in col.index:
+                text = text + " " + col[i]
+
+            keywords_score, keywords_counts, stem_counts = rake_object.run(text, trade_off, top_n)
+            grouped_results.append((group, keywords_score, keywords_counts, stem_counts))
+
     else:
-        col=surveys[col_name]
-    for i in col.index:
-        text=text+" "+col[i]
+        text = ''
+        col = surveys[col_name]
 
-    min_char_length=request.form['min_char_length']
-    min_words_length=request.form['min_words_length']
-    max_words_length=request.form['max_words_length']
-    min_keyword_frequency=request.form['min_keyword_frequency']
-    trade_off=request.form['trade_off']
-    top_n=request.form['top_n']
-    rake_object = rake.Rake(stoppath,int(min_char_length),int(min_words_length),int(max_words_length),int(min_keyword_frequency),1,3,2)
-    keywords_score, keywords_counts, stem_counts = rake_object.run(text, float(trade_off),int(top_n))
-    context = dict()
-    context['keywords_score'] = keywords_score
-    context['keywords_counts'] = keywords_counts
-    context['stem_counts']= stem_counts
+        for i in col.index:
+            text = text + " " + col[i]
 
-    return render_template("keyphrase_result.html", **context)
+        keywords_score, keywords_counts, stem_counts = rake_object.run(text, trade_off, top_n)
+        grouped_results.append(('Results:', keywords_score, keywords_counts, stem_counts))
+
+
+    return render_template("keyphrase_result.html", **{'context': grouped_results})
 
 
 @app.route('/get_keyphrases_textrank',methods=['POST'])

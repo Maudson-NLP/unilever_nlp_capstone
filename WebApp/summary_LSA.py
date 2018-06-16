@@ -1,26 +1,18 @@
-import os
-import io
-import json
 import scipy
-import logging
 import sklearn
-import pandas as pd
 import scipy.sparse
 import sklearn.metrics.pairwise
 from sklearn.preprocessing import Normalizer
-
-#from scipy.sparse import csr_matrix
-from preprocessing import *
-from scipy.sparse import lil_matrix
-
 
 from scipy.sparse import csr_matrix
 from scipy.sparse import lil_matrix
 from preprocessing import *
 import numpy as np
 
+
 DELIMITER = '\n' + '*' * 30 + ' '
 csr_matrix.__hash__ = object.__hash__
+
 
 
 def ortho_proj_vec(vectors, B):
@@ -207,13 +199,10 @@ def summarize(
 
         if split_longer_sentences:
             sentence_set = split_long_sentences(sentence_set, to_split_length)
-            print (1)
         if exclude_misspelled:
             sentence_set = do_exclude_misspelled(sentence_set)
-            print (2)
         if extract_sibling_sents:
             sentence_set = extract_sibling_sentences(sentence_set)
-            print (3)
 
         vectors = do_lemmatization(sentence_set)
         vectors = remove_stopword_bigrams(vectors)
